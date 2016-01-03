@@ -15,9 +15,13 @@ namespace JSGameIDE_Player
     public partial class Form1 : Form
     {
         public ChromiumWebBrowser Browser;
+        public Panel browserPanel;
         public Form1()
         {
             InitializeComponent();
+            browserPanel = new Panel();
+            browserPanel.Dock = DockStyle.Fill;
+            mainPanel.Controls.Add(browserPanel);
             Init();
         }
 
@@ -29,6 +33,7 @@ namespace JSGameIDE_Player
             Browser.LoadingStateChanged += Browser_LoadingStateChanged;
             Browser.TitleChanged += Browser_TitleChanged;
             browserPanel.Controls.Add(Browser);
+            this.Icon = Icon.ExtractAssociatedIcon(Application.StartupPath + @"\icon.ico");
         }
 
         private void Browser_TitleChanged(object sender, TitleChangedEventArgs e)
@@ -70,6 +75,21 @@ namespace JSGameIDE_Player
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             Cef.Shutdown();
+        }
+
+        public void GoFullscreen(bool fullscreen)
+        {
+            if (fullscreen)
+            {
+                this.WindowState = FormWindowState.Normal;
+                this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+                this.Bounds = Screen.PrimaryScreen.Bounds;
+            }
+            else
+            {
+                this.WindowState = FormWindowState.Maximized;
+                this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
+            }
         }
 
     }
