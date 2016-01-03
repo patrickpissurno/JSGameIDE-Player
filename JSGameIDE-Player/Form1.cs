@@ -28,7 +28,7 @@ namespace JSGameIDE_Player
         public void Init()
         {
             Cef.Initialize(new CefSettings());
-            Browser = new ChromiumWebBrowser("www.google.com");
+            Browser = new ChromiumWebBrowser(Application.StartupPath + @"\Resources\index.html");
             Browser.Dock = DockStyle.Fill;
             Browser.LoadingStateChanged += Browser_LoadingStateChanged;
             Browser.TitleChanged += Browser_TitleChanged;
