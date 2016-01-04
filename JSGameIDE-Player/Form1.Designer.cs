@@ -49,6 +49,7 @@
             this.ClientSize = new System.Drawing.Size(784, 561);
             this.Controls.Add(this.mainPanel);
             this.Name = "Form1";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Loading...";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.ResumeLayout(false);

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using CefSharp;
 using CefSharp.WinForms;
+using System.IO;
 
 namespace JSGameIDE_Player
 {
@@ -22,6 +23,40 @@ namespace JSGameIDE_Player
             browserPanel = new Panel();
             browserPanel.Dock = DockStyle.Fill;
             mainPanel.Controls.Add(browserPanel);
+            string gamePath = Application.StartupPath + @"\Resources\index.html";
+            if (File.Exists(gamePath))
+            {
+                string data = File.ReadAllText(gamePath);
+                int canvasPos = data.IndexOf("canvas id='gameCanvas'");
+                if (canvasPos != -1)
+                {
+                    try
+                    {
+                        int wIndex = data.IndexOf("width='", canvasPos) + 7;
+                        int width = int.Parse(data.Substring(wIndex, data.IndexOf("'", wIndex) - wIndex));
+                        int hIndex = data.IndexOf("height='", canvasPos) + 8;
+                        int height = int.Parse(data.Substring(hIndex, data.IndexOf("'", hIndex) - hIndex));
+                        int wsIndex = data.IndexOf("windowStyle='", canvasPos) + 13;
+                        this.Size = new Size(width, height);
+                        string windowStyle = data.Substring(wsIndex, data.IndexOf("'", wsIndex) - wsIndex);
+                        switch (windowStyle)
+                        {
+                            case "fixed":
+                                this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+                                this.MaximizeBox = false;
+                                break;
+                            case "fullscreen":
+                                GoFullscreen(true);
+                                break;
+                            default:
+                                this.MaximizeBox = true;
+                                this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
+                                break;
+                        }
+                    }
+                    catch { }
+                }
+            }
             Init();
         }
 
@@ -44,6 +79,7 @@ namespace JSGameIDE_Player
         private void Browser_LoadingStateChanged(object sender, LoadingStateChangedEventArgs e)
         {
             Browser.EvaluateScriptAsync("document.getElementsByTagName('body')[0].style.overflow = 'hidden'");
+            Browser.SetFocus(true);
             ToggleBrowser(!e.IsLoading);
             if (e.IsLoading)
                 SetTitle("Loading...");
